@@ -125,7 +125,7 @@ public class At2000ProtocolDecoder extends BaseProtocolDecoder {
 
                 position.setLatitude(buf.readFloat());
                 position.setLongitude(buf.readFloat());
-                position.setAltitude(buf.readFloat());
+                float altitude = buf.readFloat();
                 position.setSpeed(UnitsConverter.knotsFromKph(buf.readFloat()));
                 position.setCourse(buf.readFloat());
 
@@ -150,6 +150,10 @@ public class At2000ProtocolDecoder extends BaseProtocolDecoder {
                 int satellites = buf.readUnsignedByte();
                 position.set(Position.KEY_SATELLITES, satellites);
                 position.setValid(satellites >= 3);
+
+                if (satellites >= 4) {
+                    position.setAltitude(altitude);
+                }
 
                 positions.add(position);
 

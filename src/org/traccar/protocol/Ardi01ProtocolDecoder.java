@@ -75,11 +75,15 @@ public class Ardi01ProtocolDecoder extends BaseProtocolDecoder {
         position.setLatitude(parser.nextDouble());
         position.setSpeed(UnitsConverter.knotsFromKph(parser.nextDouble()));
         position.setCourse(parser.nextDouble());
-        position.setAltitude(parser.nextDouble());
+        double altitude = parser.nextDouble();
 
         int satellites = parser.nextInt();
         position.setValid(satellites >= 3);
         position.set(Position.KEY_SATELLITES, satellites);
+
+        if (satellites >= 4) {
+            position.setAltitude(altitude);
+        }
 
         position.set(Position.KEY_EVENT, parser.next());
         position.set(Position.KEY_BATTERY, parser.next());

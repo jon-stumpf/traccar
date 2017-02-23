@@ -128,6 +128,7 @@ public class MiniFinderProtocolDecoder extends BaseProtocolDecoder {
 
         decodeFlags(position, parser.nextInt(16));
 
+        // Need to determine how to test if satellites >= 4
         position.setAltitude(parser.nextDouble());
 
         position.set(Position.KEY_BATTERY, parser.nextInt());
@@ -135,7 +136,9 @@ public class MiniFinderProtocolDecoder extends BaseProtocolDecoder {
 
     private void decodeGPSPrecision(Position position, Parser parser) {
 
-        position.set(Position.KEY_SATELLITES, parser.nextInt());
+        int satellites = parser.nextInt();
+        position.setValid(satellites >= 3);
+        position.set(Position.KEY_SATELLITES, satellites);
         position.set(Position.KEY_SATELLITES_VISIBLE, parser.nextInt());
         position.set(Position.KEY_HDOP, parser.nextDouble());
     }

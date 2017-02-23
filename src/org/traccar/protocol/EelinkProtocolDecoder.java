@@ -157,13 +157,17 @@ public class EelinkProtocolDecoder extends BaseProtocolDecoder {
         if (BitUtil.check(flags, 0)) {
             position.setLatitude(buf.readInt() / 1800000.0);
             position.setLongitude(buf.readInt() / 1800000.0);
-            position.setAltitude(buf.readShort());
+            int altitude = buf.readShort();
             position.setSpeed(UnitsConverter.knotsFromKph(buf.readUnsignedShort()));
             position.setCourse(buf.readUnsignedShort());
-            
+
             int satellites = buf.readUnsignedByte();
             position.setValid(satellites >= 3);
             position.set(Position.KEY_SATELLITES, satellites);
+
+            if (satellites >= 4) {
+                position.setAltitude(altitude);
+            }
         }
 
         if (BitUtil.check(flags, 1)) {

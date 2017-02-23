@@ -89,7 +89,7 @@ public class OrionProtocolDecoder extends BaseProtocolDecoder {
 
                 position.setLatitude(convertCoordinate(buf.readInt()));
                 position.setLongitude(convertCoordinate(buf.readInt()));
-                position.setAltitude(buf.readShort() / 10.0);
+                double altitude = buf.readShort() / 10.0;
                 position.setCourse(buf.readUnsignedShort());
                 position.setSpeed(buf.readUnsignedShort() * 0.0539957);
 
@@ -101,6 +101,10 @@ public class OrionProtocolDecoder extends BaseProtocolDecoder {
                 int satellites = buf.readUnsignedByte();
                 position.setValid(satellites >= 3);
                 position.set(Position.KEY_SATELLITES, satellites);
+
+                if (satellites >= 4) {
+                    position.setAltitude(altitude);
+                }
 
                 positions.add(position);
             }

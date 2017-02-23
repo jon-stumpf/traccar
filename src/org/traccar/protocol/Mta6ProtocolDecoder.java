@@ -200,6 +200,10 @@ public class Mta6ProtocolDecoder extends BaseProtocolDecoder {
     }
 
     private Position parseFormatA1(DeviceSession deviceSession, ChannelBuffer buf) {
+
+        int altitude = 0;
+        int satellites = 0;
+
         Position position = new Position();
         position.setDeviceId(deviceSession.getDeviceId());
         position.setProtocol(getProtocolName());
@@ -225,7 +229,7 @@ public class Mta6ProtocolDecoder extends BaseProtocolDecoder {
         buf.readUnsignedByte(); // status
 
         if (BitUtil.check(flags, 0)) {
-            position.setAltitude(buf.readUnsignedShort());
+            altitude = buf.readUnsignedShort();
             position.setSpeed(buf.readUnsignedByte());
             position.setCourse(buf.readByte());
             position.set(Position.KEY_ODOMETER, new FloatReader().readFloat(buf));
@@ -265,9 +269,13 @@ public class Mta6ProtocolDecoder extends BaseProtocolDecoder {
 
             position.set(Position.KEY_RSSI, buf.getUnsignedByte(buf.readerIndex()) >> 5);
 
-            int satellites = buf.readUnsignedByte() & 0x1f;
+            satellites = buf.readUnsignedByte() & 0x1f;
             position.setValid(satellites >= 3);
             position.set(Position.KEY_SATELLITES, satellites);
+        }
+
+        if (satellites >= 4 && BitUtil.check(flags, 0)) {
+            position.setAltitude(altitude);
         }
 
         // other data

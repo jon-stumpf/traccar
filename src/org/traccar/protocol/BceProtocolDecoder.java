@@ -102,7 +102,11 @@ public class BceProtocolDecoder extends BaseProtocolDecoder {
                         position.set(Position.KEY_HDOP, gps >> 4);
 
                         position.setCourse(buf.readUnsignedByte());
-                        position.setAltitude(buf.readUnsignedShort());
+
+                        int altitude = buf.readUnsignedShort();
+                        if (satellites >= 4) {
+                            position.setAltitude(altitude);
+                        }
 
                         position.set(Position.KEY_ODOMETER, buf.readUnsignedInt());
                     }

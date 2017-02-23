@@ -190,11 +190,10 @@ public class OigoProtocolDecoder extends BaseProtocolDecoder {
                 .setDate(2010 + BitUtil.from(date, 12), BitUtil.between(date, 8, 12), BitUtil.to(date, 8))
                 .setTime(buf.readUnsignedByte(), buf.readUnsignedByte(), 0);
 
-        position.setValid(true);
         position.setLatitude(convertCoordinate(buf.readInt()));
         position.setLongitude(convertCoordinate(buf.readInt()));
 
-        position.setAltitude(UnitsConverter.metersFromFeet(buf.readShort()));
+        double altitude = UnitsConverter.metersFromFeet(buf.readShort());
         position.setCourse(buf.readUnsignedShort());
         position.setSpeed(UnitsConverter.knotsFromMph(buf.readUnsignedByte()));
 
@@ -213,6 +212,10 @@ public class OigoProtocolDecoder extends BaseProtocolDecoder {
         position.setValid(satellites >= 3);
         position.set(Position.KEY_SATELLITES, satellites);
         position.set(Position.KEY_ODOMETER, (long) (buf.readUnsignedInt() * 1609.34));
+
+        if (satellites >= 4) {
+            position.setAltitude(altitude);
+        }
 
         if (channel != null && BitUtil.check(flags, 7)) {
             ChannelBuffer response = ChannelBuffers.dynamicBuffer();

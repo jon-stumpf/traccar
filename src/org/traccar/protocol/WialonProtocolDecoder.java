@@ -71,6 +71,8 @@ public class WialonProtocolDecoder extends BaseProtocolDecoder {
 
     private Position decodePosition(Channel channel, SocketAddress remoteAddress, String substring) {
 
+        int satellites = 0;
+
         DeviceSession deviceSession = getDeviceSession(channel, remoteAddress);
         if (deviceSession == null) {
             return null;
@@ -94,12 +96,16 @@ public class WialonProtocolDecoder extends BaseProtocolDecoder {
         position.setLongitude(parser.nextCoordinate());
         position.setSpeed(UnitsConverter.knotsFromKph(parser.nextDouble()));
         position.setCourse(parser.nextDouble());
-        position.setAltitude(parser.nextDouble());
+        double altitude = parser.nextDouble();
 
         if (parser.hasNext()) {
-            int satellites = parser.nextInt();
+            satellites = parser.nextInt();
             position.setValid(satellites >= 3);
             position.set(Position.KEY_SATELLITES, satellites);
+        }
+
+        if (satellites >= 4) {
+                    position.setAltitude(altitude);
         }
 
         position.set(Position.KEY_HDOP, parser.next());

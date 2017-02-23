@@ -92,12 +92,17 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
 
         position.setLatitude(buf.readInt() * 0.0000001);
         position.setLongitude(buf.readInt() * 0.0000001);
-        position.setAltitude(buf.readUnsignedShort());
+        int altitude = buf.readUnsignedShort();
 
         int satellites = buf.readUnsignedShort();
         position.setValid(satellites >= 3);
         position.set(Position.KEY_SATELLITES, satellites); // satellites in fix
         position.set(Position.KEY_SATELLITES_VISIBLE, buf.readUnsignedShort()); // satellites in track
+
+        if (satellites >= 4) {
+            position.setAltitude(altitude);
+        }
+
         buf.readUnsignedShort(); // GPS antenna state
 
         position.setSpeed(buf.readUnsignedShort() * 0.194384);
@@ -131,12 +136,16 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
 
         position.setLatitude(buf.readInt() * 0.0000001);
         position.setLongitude(buf.readInt() * 0.0000001);
-        position.setAltitude(buf.readUnsignedShort());
+        int altitude = buf.readUnsignedShort();
 
         int satellites = buf.readUnsignedByte();
         position.setValid(satellites >= 3);
         position.set(Position.KEY_SATELLITES, satellites); // satellites in fix
         position.set(Position.KEY_SATELLITES_VISIBLE, buf.readUnsignedByte()); // satellites in track
+
+        if (satellites >= 4) {
+            position.setAltitude(altitude);
+        }
 
         position.setSpeed(buf.readUnsignedShort() * 0.194384);
         position.setCourse(buf.readUnsignedShort());

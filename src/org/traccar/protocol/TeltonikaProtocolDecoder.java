@@ -129,6 +129,8 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
     private void decodeLocation(Position position, ChannelBuffer buf, int codec) {
 
         int globalMask = 0x0f;
+        int altitude = 0;
+        int satellites = 0;
 
         if (codec == CODEC_GH3000) {
 
@@ -148,7 +150,7 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
                 }
 
                 if (BitUtil.check(locationMask, 1)) {
-                    position.setAltitude(buf.readUnsignedShort());
+                    altitude = buf.readUnsignedShort();
                 }
 
                 if (BitUtil.check(locationMask, 2)) {
@@ -160,7 +162,7 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
                 }
 
                 if (BitUtil.check(locationMask, 4)) {
-                    int satellites = buf.readUnsignedByte();
+                    satellites = buf.readUnsignedByte();
                     position.set(Position.KEY_SATELLITES, satellites);
                     position.setValid(satellites >= 3);
                 }
@@ -182,6 +184,10 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
                     position.set("operator", buf.readUnsignedInt());
                 }
 
+                if (satellites >= 4) {
+                    position.setAltitude(altitude);
+                }
+
             } else {
 
                 getLastLocation(position, new Date(time * 1000));
@@ -196,13 +202,16 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
 
             position.setLongitude(buf.readInt() / 10000000.0);
             position.setLatitude(buf.readInt() / 10000000.0);
-            position.setAltitude(buf.readShort());
+            altitude = buf.readShort();
             position.setCourse(buf.readUnsignedShort());
 
-            int satellites = buf.readUnsignedByte();
+            satellites = buf.readUnsignedByte();
             position.set(Position.KEY_SATELLITES, satellites);
-
             position.setValid(satellites >= 3);
+
+            if (satellites >= 4) {
+                position.setAltitude(altitude);
+            }
 
             position.setSpeed(UnitsConverter.knotsFromKph(buf.readUnsignedShort()));
 

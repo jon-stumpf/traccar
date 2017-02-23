@@ -91,11 +91,14 @@ public class IntellitracProtocolDecoder extends BaseProtocolDecoder {
         position.setLatitude(parser.nextDouble());
         position.setSpeed(parser.nextDouble());
         position.setCourse(parser.nextDouble());
-        position.setAltitude(parser.nextDouble());
-
+        double altitude = parser.nextDouble();
         int satellites = parser.nextInt();
         position.setValid(satellites >= 3);
         position.set(Position.KEY_SATELLITES, satellites);
+
+        if (satellites >= 4) {
+            position.setAltitude(altitude);
+        }
 
         position.set(Position.KEY_INDEX, parser.nextLong());
         position.set(Position.KEY_INPUT, parser.next());

@@ -130,7 +130,10 @@ public class FlextrackProtocolDecoder extends BaseProtocolDecoder {
             int mcc = parser.nextInt();
             int mnc = parser.nextInt();
 
-            position.setAltitude(parser.nextInt());
+            int altitude = parser.nextInt();
+            if (satellites >= 4) {
+                position.setAltitude(altitude);
+            }
 
             position.set(Position.KEY_HDOP, parser.nextInt() * 0.1);
 
