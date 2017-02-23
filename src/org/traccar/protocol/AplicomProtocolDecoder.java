@@ -198,8 +198,6 @@ public class AplicomProtocolDecoder extends BaseProtocolDecoder {
 
     private void decodeD(Position position, ChannelBuffer buf, int selector, int event) {
 
-        int satellites = 0;
-
         if ((selector & 0x0008) != 0) {
             position.setValid((buf.readUnsignedByte() & 0x40) != 0);
         } else {
@@ -214,9 +212,7 @@ public class AplicomProtocolDecoder extends BaseProtocolDecoder {
             position.setTime(new Date(buf.readUnsignedInt() * 1000));
             position.setLatitude(buf.readInt() / 1000000.0);
             position.setLongitude(buf.readInt() / 1000000.0);
-            satellites = buf.readUnsignedByte();
-            position.set(Position.KEY_SATELLITES, satellites);
-            position.setValid(satellites >= 3);
+            position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
         }
 
         if ((selector & 0x0010) != 0) {
