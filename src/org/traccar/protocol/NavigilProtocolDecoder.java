@@ -84,7 +84,6 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
         Position position = new Position();
         position.setProtocol(getProtocolName());
 
-        position.setValid(true);
         position.set(Position.KEY_INDEX, sequenceNumber);
         position.setDeviceId(deviceSession.getDeviceId());
 
@@ -95,7 +94,9 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
         position.setLongitude(buf.readInt() * 0.0000001);
         position.setAltitude(buf.readUnsignedShort());
 
-        position.set(Position.KEY_SATELLITES, buf.readUnsignedShort()); // satellites in fix
+        int satellites = buf.readUnsignedShort();
+        position.setValid(satellites >= 3);
+        position.set(Position.KEY_SATELLITES, satellites); // satellites in fix
         position.set(Position.KEY_SATELLITES_VISIBLE, buf.readUnsignedShort()); // satellites in track
         buf.readUnsignedShort(); // GPS antenna state
 
@@ -119,7 +120,6 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
         Position position = new Position();
         position.setProtocol(getProtocolName());
 
-        position.setValid(true);
         position.set(Position.KEY_INDEX, sequenceNumber);
         position.setDeviceId(deviceSession.getDeviceId());
 
@@ -133,7 +133,9 @@ public class NavigilProtocolDecoder extends BaseProtocolDecoder {
         position.setLongitude(buf.readInt() * 0.0000001);
         position.setAltitude(buf.readUnsignedShort());
 
-        position.set(Position.KEY_SATELLITES, buf.readUnsignedByte()); // satellites in fix
+        int satellites = buf.readUnsignedByte();
+        position.setValid(satellites >= 3);
+        position.set(Position.KEY_SATELLITES, satellites); // satellites in fix
         position.set(Position.KEY_SATELLITES_VISIBLE, buf.readUnsignedByte()); // satellites in track
 
         position.setSpeed(buf.readUnsignedShort() * 0.194384);

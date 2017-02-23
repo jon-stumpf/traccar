@@ -70,8 +70,10 @@ public class HomtecsProtocolDecoder extends BaseProtocolDecoder {
 
         position.setTime(dateBuilder.getDate());
 
-        position.setValid(true);
-        position.set(Position.KEY_SATELLITES, parser.nextInt());
+
+        int satellites = parser.nextInt();
+        position.set(Position.KEY_SATELLITES, satellites);
+        position.setValid(satellites >= 3);
 
         position.setLatitude(parser.nextCoordinate());
         position.setLongitude(parser.nextCoordinate());

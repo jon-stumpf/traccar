@@ -202,7 +202,7 @@ public class TeltonikaProtocolDecoder extends BaseProtocolDecoder {
             int satellites = buf.readUnsignedByte();
             position.set(Position.KEY_SATELLITES, satellites);
 
-            position.setValid(satellites != 0);
+            position.setValid(satellites >= 3);
 
             position.setSpeed(UnitsConverter.knotsFromKph(buf.readUnsignedShort()));
 

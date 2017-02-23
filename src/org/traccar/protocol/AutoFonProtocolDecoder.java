@@ -191,8 +191,9 @@ public class AutoFonProtocolDecoder extends BaseProtocolDecoder {
             buf.skipBytes(6); // mcc, mnc, lac, cid
 
             int valid = buf.readUnsignedByte();
-            position.setValid(BitUtil.from(valid, 6) != 0);
-            position.set(Position.KEY_SATELLITES, BitUtil.from(valid, 6));
+            int satellites = BitUtil.from(valid, 6);
+            position.setValid(satellites >= 3);
+            position.set(Position.KEY_SATELLITES, satellites);
 
             int time = buf.readUnsignedMedium();
             int date = buf.readUnsignedMedium();

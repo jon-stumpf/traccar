@@ -31,7 +31,7 @@ public class AutoFonProtocolDecoderTest extends ProtocolTest {
 
         verifyPosition(decoder, binary(
                 "023E00001E004D411EFA01772F185285009C48041F1E366C2961380F26B10B00911C"),
-                position("2010-01-27 04:00:08.000", true, 54.73838, 56.10343));
+                position("2010-01-27 04:00:08.000", false, 54.73838, 56.10343));  // false because only 2 satellites in the fix
 
         verifyPosition(decoder, binary(
                 "023E00001E004D411EFA01772F185285009C48041F1E366C2961380F26B10B00911C"));

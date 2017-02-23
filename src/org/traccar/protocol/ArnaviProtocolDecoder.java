@@ -79,12 +79,14 @@ public class ArnaviProtocolDecoder extends BaseProtocolDecoder {
         position.set(Position.KEY_BATTERY, parser.nextInt() * 0.01);
         position.set(Position.KEY_IGNITION, parser.nextInt() == 1);
         position.set(Position.KEY_INPUT, parser.nextInt());
-        position.set(Position.KEY_SATELLITES, parser.nextInt());
+
+        int satellites = parser.nextInt();
+        position.set(Position.KEY_SATELLITES, satellites);
 
         DateBuilder dateBuilder = new DateBuilder()
                 .setTime(parser.nextInt(), parser.nextInt(), parser.nextInt());
 
-        position.setValid(true);
+        position.setValid(satellites >= 3);
         position.setLatitude(parser.nextCoordinate());
         position.setLongitude(parser.nextCoordinate());
         position.setSpeed(parser.nextDouble());

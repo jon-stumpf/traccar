@@ -69,7 +69,6 @@ public class AstraProtocolDecoder extends BaseProtocolDecoder {
 
             buf.readUnsignedByte(); // index
 
-            position.setValid(true);
             position.setLatitude(buf.readInt() * 0.000001);
             position.setLongitude(buf.readInt() * 0.000001);
 
@@ -99,7 +98,9 @@ public class AstraProtocolDecoder extends BaseProtocolDecoder {
             position.setAltitude(buf.readUnsignedByte() * 20);
 
             int quality = buf.readUnsignedByte();
-            position.set(Position.KEY_SATELLITES, quality & 0xf);
+            int satellites = quality & 0xf;
+            position.set(Position.KEY_SATELLITES, satellites);
+            position.setValid(satellites >= 3);
             position.set(Position.KEY_RSSI, quality >> 4);
 
             buf.readUnsignedByte(); // geofence events

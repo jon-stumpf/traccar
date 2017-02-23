@@ -121,8 +121,6 @@ public class At2000ProtocolDecoder extends BaseProtocolDecoder {
                 buf.readUnsignedShort(); // index
                 buf.readUnsignedShort(); // reserved
 
-                position.setValid(true);
-
                 position.setTime(new Date(buf.readLong() * 1000));
 
                 position.setLatitude(buf.readFloat());
@@ -148,7 +146,10 @@ public class At2000ProtocolDecoder extends BaseProtocolDecoder {
 
                 position.set(Position.KEY_BATTERY, buf.readUnsignedByte());
                 position.set(Position.PREFIX_TEMP + 1, buf.readUnsignedByte());
-                position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
+
+                int satellites = buf.readUnsignedByte();
+                position.set(Position.KEY_SATELLITES, satellites);
+                position.setValid(satellites >= 3);
 
                 positions.add(position);
 

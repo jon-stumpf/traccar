@@ -71,7 +71,6 @@ public class AdmProtocolDecoder extends BaseProtocolDecoder {
 
             position.set(Position.KEY_STATUS, buf.readUnsignedShort());
 
-            position.setValid(true);
             position.setLatitude(buf.readFloat());
             position.setLongitude(buf.readFloat());
             position.setCourse(buf.readUnsignedShort() * 0.1);
@@ -82,7 +81,10 @@ public class AdmProtocolDecoder extends BaseProtocolDecoder {
             position.setAltitude(buf.readUnsignedShort());
 
             position.set(Position.KEY_HDOP, buf.readUnsignedByte() * 0.1);
-            position.set(Position.KEY_SATELLITES, buf.readUnsignedByte() & 0x0f);
+
+            int satellites = buf.readUnsignedByte() & 0x0f;
+            position.set(Position.KEY_SATELLITES, satellites);
+            position.setValid(satellites >= 3);
 
             position.setTime(new Date(buf.readUnsignedInt() * 1000));
 

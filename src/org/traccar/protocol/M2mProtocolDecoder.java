@@ -104,7 +104,6 @@ public class M2mProtocolDecoder extends BaseProtocolDecoder {
                 latitude = -latitude;
             }
 
-            position.setValid(true);
             position.setLatitude(latitude);
             position.setLongitude(longitude);
             position.setSpeed(buf.readUnsignedByte());
@@ -114,6 +113,7 @@ public class M2mProtocolDecoder extends BaseProtocolDecoder {
                 return null; // cell information
             }
             position.set(Position.KEY_SATELLITES, satellites);
+            position.setValid(satellites >= 3);
 
             // decode other data
 

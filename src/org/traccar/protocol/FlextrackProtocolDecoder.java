@@ -115,13 +115,14 @@ public class FlextrackProtocolDecoder extends BaseProtocolDecoder {
                     .setTime(parser.nextInt(), parser.nextInt(), parser.nextInt());
             position.setTime(dateBuilder.getDate());
 
-            position.setValid(true);
             position.setLatitude(parser.nextCoordinate(Parser.CoordinateFormat.HEM_DEG_MIN));
             position.setLongitude(parser.nextCoordinate(Parser.CoordinateFormat.HEM_DEG_MIN));
             position.setSpeed(UnitsConverter.knotsFromKph(parser.nextInt()));
             position.setCourse(parser.nextInt());
 
-            position.set(Position.KEY_SATELLITES, parser.nextInt());
+            int satellites = parser.nextInt();
+            position.setValid(satellites >= 3);
+            position.set(Position.KEY_SATELLITES, satellites);
             position.set(Position.KEY_BATTERY, parser.nextInt());
             int rssi = parser.nextInt();
             position.set(Position.KEY_STATUS, parser.nextInt(16));

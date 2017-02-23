@@ -74,13 +74,14 @@ public class RuptelaProtocolDecoder extends BaseProtocolDecoder {
 
                 buf.readUnsignedByte(); // priority (reserved)
 
-                position.setValid(true);
                 position.setLongitude(buf.readInt() / 10000000.0);
                 position.setLatitude(buf.readInt() / 10000000.0);
                 position.setAltitude(buf.readUnsignedShort() / 10.0);
                 position.setCourse(buf.readUnsignedShort() / 100.0);
 
-                position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
+                int satellites = buf.readUnsignedByte();
+                position.setValid(satellites >= 3);
+                position.set(Position.KEY_SATELLITES, satellites);
 
                 position.setSpeed(UnitsConverter.knotsFromKph(buf.readUnsignedShort()));
 

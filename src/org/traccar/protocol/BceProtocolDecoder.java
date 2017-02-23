@@ -91,13 +91,14 @@ public class BceProtocolDecoder extends BaseProtocolDecoder {
                     mask = masks.get(0);
 
                     if (BitUtil.check(mask, 0)) {
-                        position.setValid(true);
                         position.setLongitude(buf.readFloat());
                         position.setLatitude(buf.readFloat());
                         position.setSpeed(buf.readUnsignedByte());
 
                         int gps = buf.readUnsignedByte();
-                        position.set(Position.KEY_SATELLITES, gps & 0xf);
+                        int satellites = gps & 0xf;
+                        position.set(Position.KEY_SATELLITES, satellites);
+                        position.setValid(satellites >= 3);
                         position.set(Position.KEY_HDOP, gps >> 4);
 
                         position.setCourse(buf.readUnsignedByte());

@@ -209,7 +209,9 @@ public class OigoProtocolDecoder extends BaseProtocolDecoder {
         int index = buf.readUnsignedByte();
 
         position.set(Position.KEY_VERSION, buf.readUnsignedByte());
-        position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
+        int satellites = buf.readUnsignedByte();
+        position.setValid(satellites >= 3);
+        position.set(Position.KEY_SATELLITES, satellites);
         position.set(Position.KEY_ODOMETER, (long) (buf.readUnsignedInt() * 1609.34));
 
         if (channel != null && BitUtil.check(flags, 7)) {

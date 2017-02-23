@@ -132,7 +132,9 @@ public class MxtProtocolDecoder extends BaseProtocolDecoder {
             }
 
             if (BitUtil.check(infoGroups, 2)) {
-                position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
+                int satellites = buf.readUnsignedByte();
+                position.set(Position.KEY_SATELLITES, satellites);
+                position.setValid(satellites >= 3);
                 position.set(Position.KEY_HDOP, buf.readUnsignedByte());
                 position.setAccuracy(buf.readUnsignedByte());
                 position.set(Position.KEY_RSSI, buf.readUnsignedByte());

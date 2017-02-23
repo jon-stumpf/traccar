@@ -83,11 +83,15 @@ public class AtrackProtocolDecoder extends BaseProtocolDecoder {
 
     private void readCustomData(Position position, ChannelBuffer buf, String form) {
         CellTower cellTower = new CellTower();
+        int satellites;
+
         String[] keys = form.substring(1).split("%");
         for (String key : keys) {
             switch (key) {
                 case "SA":
-                    position.set(Position.KEY_SATELLITES, buf.readUnsignedByte());
+                    satellites = buf.readUnsignedByte();
+                    position.set(Position.KEY_SATELLITES, satellites);
+                    position.setValid(satellites >= 3);
                     break;
                 case "MV":
                     position.set(Position.KEY_POWER, buf.readUnsignedShort());
@@ -236,7 +240,7 @@ public class AtrackProtocolDecoder extends BaseProtocolDecoder {
                 buf.readUnsignedInt(); // send time
             }
 
-            position.setValid(true);
+            position.setValid(true); // May be overridden in readCustomData();
             position.setLongitude(buf.readInt() * 0.000001);
             position.setLatitude(buf.readInt() * 0.000001);
             position.setCourse(buf.readUnsignedShort());

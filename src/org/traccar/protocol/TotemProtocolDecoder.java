@@ -317,7 +317,8 @@ public class TotemProtocolDecoder extends BaseProtocolDecoder {
             position.set(Position.PREFIX_TEMP + 2, parser.next());
 
             CellTower cellTower = CellTower.fromLacCid(parser.nextInt(16), parser.nextInt(16));
-            position.set(Position.KEY_SATELLITES, parser.nextInt());
+            int satellites = parser.nextInt();
+            position.set(Position.KEY_SATELLITES, satellites);
             cellTower.setSignalStrength(parser.nextInt());
             position.setNetwork(new Network(cellTower));
 
@@ -327,7 +328,7 @@ public class TotemProtocolDecoder extends BaseProtocolDecoder {
             position.set(Position.KEY_HDOP, parser.nextDouble());
             position.set(Position.KEY_ODOMETER, parser.nextInt() * 1000);
 
-            position.setValid(true);
+            position.setValid(satellites >= 3);
             position.setLatitude(parser.nextCoordinate());
             position.setLongitude(parser.nextCoordinate());
 
